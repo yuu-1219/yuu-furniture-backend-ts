@@ -33,9 +33,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(methodOverride('_method'))
 app.use(cors());
-app.use("/products", productRoutes);
-app.use("/user", userRoutes);
-app.use("/cart", cartRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
