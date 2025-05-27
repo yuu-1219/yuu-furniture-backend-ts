@@ -27,7 +27,7 @@ const products = [];
 for (let i = 0; i < 20; i++) {
     products.push({
         ...baseProduct,
-        productId: uuid(),
+        // productId: uuid(),
         name: `${baseProduct.name}${i+1}`,
         price: 500 + i * 1000
     })

@@ -10,7 +10,12 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const Product = require("./src/models/product");
+const User = require("./src/models/user");
+const Cart = require("./src/models/cart");
 const productRoutes = require("./src/routes/productRoutes");
+const userRoutes = require("./src/routes/userRoutes");
+const cartRoutes = require("./src/routes/cartRoutes");
+
 const localdb_url = 'mongodb://localhost:27017/yuu-furniture'
 const dburl = process.env.DB_URL;
 console.log("DB URL:", dburl);
@@ -29,6 +34,8 @@ app.use(express.json())
 app.use(methodOverride('_method'))
 app.use(cors());
 app.use("/products", productRoutes);
+app.use("/user", userRoutes);
+app.use("/cart", cartRoutes);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

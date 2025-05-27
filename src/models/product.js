@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-    productId: {
-        type: String,
-        required: true
-    },
+    // productId: {
+    //     type: String,
+    //     required: true
+    // },
     name: {
         type: String,
         required: true
@@ -53,18 +53,6 @@ module.exports = Product;
 
 
 
-
-// {
-//     "productId": "550e8400-e29b-41d4-a716-446655440000",
-//     "name": "Wooden Cup",
-//     "price": 2500,
-//     "image": "/img/cup.png",
-//     "description": "Handmade cup",
-//     "color": "white",
-//     "stock": 20,
-//     "category": "strage_furniture",
-//     "rating": 4.5
-//   }
 
 // categoryId: "storage_furniture", categoryLabel: "収納家具",
 // categoryId: "small_storage", categoryLabel: "小物収納",
