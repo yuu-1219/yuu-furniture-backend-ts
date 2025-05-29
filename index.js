@@ -18,6 +18,7 @@ const cartRoutes = require("./src/routes/cartRoutes");
 
 const localdb_url = 'mongodb://localhost:27017/yuu-furniture'
 const dburl = process.env.DB_URL;
+
 console.log("DB URL:", dburl);
 
 mongoose.connect(dburl, { useNewUrlParser: true, useUnifiedTopology: true })

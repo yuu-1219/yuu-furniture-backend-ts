@@ -33,66 +33,24 @@ app.set('view engine', 'ejs');
 
 //全商品取得
 router.get('/', productController.allProducts)
-// app.get('/', async (req, res) => {
-//     // const products = await Product.find({});
-//     const { category } = req.query;
-//     if (category) {
-//         const products = await Product.find({ category })
-//     } else {
-//         const products = await Product.find({})
-//     }
-//     res.status(201).json(products);
-// })
 
 //1つの商品を取得
 router.get("/:id", productController.productDetail)
-// app.get("/:id", async (req, res) => {
-//     const { id } = req.params;
-//     const foundProduct = await Product.findById(id);
-//     res.status(201).json(foundProduct);
 
-// })
 
 //商品情報登録フォーム
 router.get('/new', productController.registerProductForm)
-// app.get('/new', (req, res) => {
-//     res.render('products/new', { categories })
-// })
 
 //商品情報登録
 router.post('/', productController.registerProduct)
-// app.post('/', async (req, res) => {
-//     const productData = {
-//         ...req.body,
-//         productId: uuid()
-//     };
-//     const newProduct = new Product(productData);
-//     await newProduct.save();
-//     res.status(201).json(newProduct);
-// })
 
 //商品情報編集フォーム
 router.get('/:id/edit', productController.editProductForm)
-// app.get('/:id/edit', async (req, res) => {
-//     const { id } = req.params;
-//     const product = await Product.findById(id);
-//     res.render('products/edit', { product, categories })
-// })
 
 //商品情報更新
 router.put('/:id', productController.updateProduct)
-// app.put('/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
-//     res.status(201).json(product);
-// })
 
 //商品情報削除
 router.delete('/:id', productController.deleteProduct)
-// app.delete('/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const deletedProduct = await Product.findByIdAndDelete(id);
-//     res.status(201).json(deletedProduct);
-// })
 
 module.exports = router;
