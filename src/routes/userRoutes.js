@@ -42,7 +42,10 @@ router.post("/login", userController.login)
 router.post('/', userController.registerUser)
 
 //ユーザー情報更新
-router.put('/:id', userController.updateUser)
+router.put('/:id', userController.updateUserInfo)
+
+//ユーザー情報更新
+router.put('/:id/password', userController.updateUserPassword)
 
 //ユーザー情報削除
 router.delete('/:id', userController.deleteUser)

@@ -23,7 +23,7 @@
 - フロント：HTML / CSS / JavaScript(ES6) / React(Material UI含む)
 - バックエンド：Node.js / Express
 - データベース：MongoDB（Mongoose）
-- デプロイ：AWS
+- デプロイ：AWS(EC2, Route53, ALB, S3)
 - その他：Git / GitHub
   
 
