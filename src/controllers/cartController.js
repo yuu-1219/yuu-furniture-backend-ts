@@ -1,30 +1,51 @@
 const Cart = require("../models/cart");
+const AppError = require("../utils/AppError");
+const wrapAsync = require("../utils/wrapAsync");
 
 
-module.exports.cartDetail = async (req, res) => {
+module.exports.cartDetail = wrapAsync(async (req, res, next) => {
     const { userId } = req.params;
-    const foundCart = await Cart.findOne({userId});
-    res.status(201).json(foundCart);
-}
+    const foundCart = await Cart.findOne({ userId });
 
-module.exports.registerCart = async (req, res) => {
+    if (!foundCart) {
+        throw new AppError("該当するカートデータが存在しません", 404);
+    }
+
+    res.status(200).json(foundCart);
+})
+
+module.exports.registerCart = wrapAsync(async (req, res, next) => {
     const cartData = {
         ...req.body,
         // cartId: uuid()
     };
     const newCart = new Cart(cartData);
     await newCart.save();
+
+    if (!newCart) {
+        throw new AppError("カートデータが正しく登録されませんでした", 500);
+    }
+
     res.status(201).json(newCart);
-}
+})
 
-module.exports.updateCart = async (req, res) => {
+module.exports.updateCart = wrapAsync(async (req, res, next) => {
     const { userId } = req.params;
-    const cart = await Cart.findOneAndUpdate({userId}, req.body, { runValidators: true, new: true });
-    res.status(201).json(cart);
-}
+    const updatedCart = await Cart.findOneAndUpdate({ userId }, req.body, { runValidators: true, new: true });
 
-module.exports.deleteCart = async (req, res) => {
+    if (!updatedCart) {
+        throw new AppError("該当するカートデータが存在しません", 404);
+    }
+
+    res.status(200).json(updatedCart);
+})
+
+module.exports.deleteCart = wrapAsync(async (req, res, next) => {
     const { userId } = req.params;
-    const deletedCart = await Cart.findOneAndDelete({userId});
-    res.status(201).json(deletedCart);
-}
+    const deletedCart = await Cart.findOneAndDelete({ userId });
+
+    if (!deletedCart) {
+        throw new AppError("該当するカートデータが存在しません", 404);
+    }
+    res.status(200).json(deletedCart);
+})

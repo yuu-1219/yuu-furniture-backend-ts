@@ -1,8 +1,9 @@
 const Product = require("../models/product");
+const AppError = require("../utils/AppError");
+const wrapAsync = require("../utils/wrapAsync");
 
 
-module.exports.allProducts = async (req, res) => {
-    // const products = await Product.find({});
+module.exports.allProducts = wrapAsync(async (req, res, next) => {
     let products = [];
     const { category } = req.query;
     if (category) {
@@ -10,44 +11,69 @@ module.exports.allProducts = async (req, res) => {
     } else {
         products = await Product.find({})
     }
-    res.status(201).json(products);
-}
+    
+    if(products.length === 0) {
+        throw new AppError("商品データが登録されていません", 404);
+    }
+    res.status(200).json(products);
+})
 
-module.exports.productDetail = async (req, res) => {
+module.exports.productDetail = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
-    res.status(201).json(foundProduct);
 
-}
+    if(!foundProduct) {
+        throw new AppError("該当する商品データが存在しません", 404);
+    }
+    res.status(200).json(foundProduct);
+
+})
 
 module.exports.registerProductForm = (req, res) => {
     res.render('products/new', { categories })
 }
 
-module.exports.registerProduct = async (req, res) => {
+module.exports.registerProduct = wrapAsync(async (req, res, next) => {
     const productData = {
         ...req.body,
         productId: uuid()
     };
     const newProduct = new Product(productData);
     await newProduct.save();
+
+    if(!newProduct) {
+        throw new AppError("商品データが正しく登録されませんでした", 500);
+    }
+
     res.status(201).json(newProduct);
-}
+})
 
-module.exports.editProductForm = async (req, res) => {
+module.exports.editProductForm = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    res.render('products/edit', { product, categories })
-}
+    const foundProduct = await Product.findById(id);
 
-module.exports.updateProduct = async (req, res) => {
+    if(!foundProduct) {
+        throw new AppError("該当する商品データが存在しません", 404);
+    }
+    res.render('products/edit', { foundProduct, categories })
+})
+
+module.exports.updateProduct = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
-    res.status(201).json(product);
-}
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
 
-module.exports.deleteProduct = async (req, res) => {
+    if(!updatedProduct) {
+        throw new AppError("該当する商品データが存在しません", 404);
+    }
+    res.status(200).json(updatedProduct);
+})
+
+module.exports.deleteProduct = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const deletedProduct = await Product.findByIdAndDelete(id);
-    res.status(201).json(deletedProduct);
-}
+
+    if(!deletedProduct) {
+        throw new AppError("該当する商品データが存在しません", 404);
+    }
+    res.status(200).json(deletedProduct);
+})

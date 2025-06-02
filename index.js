@@ -9,9 +9,7 @@ const methodOverride = require('method-override')
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const Product = require("./src/models/product");
-const User = require("./src/models/user");
-const Cart = require("./src/models/cart");
+
 const productRoutes = require("./src/routes/productRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
@@ -43,9 +41,9 @@ app.set('view engine', 'ejs');
 
 
 
-const categories = ["storage_furniture", "small_storage", "sofas・armchairs", "textiles", 
-    "beds・mattresses", "tables・chairs", "desk・deskchairs", "lighting", "rugs・mats", 
-    "decoration", "kitchenware・tableware", "bathroom_products", "kitchen・appliances"];
+// const categories = ["storage_furniture", "small_storage", "sofas・armchairs", "textiles", 
+//     "beds・mattresses", "tables・chairs", "desk・deskchairs", "lighting", "rugs・mats", 
+//     "decoration", "kitchenware・tableware", "bathroom_products", "kitchen・appliances"];
 
 
 
@@ -53,67 +51,23 @@ app.get('/', (req, res) => {
     res.send('Welcome to the home page!!!!')
 })
 
+const handleValidationErr = err => {
+    console.dir(err);
+    return new AppError(`Validation Failed...${err.message}`, 400)
+}
 
+app.use((err, req, res, next) => {
+    console.log(err.name);
+    if (err.name === 'ValidationError') err = handleValidationErr(err)
+    next(err);
+})
 
-
-// //全商品取得
-// app.get('/products', async (req, res) => {
-//     // const products = await Product.find({});
-//     const { category } = req.query;
-//     if (category) {
-//         const products = await Product.find({ category })
-//     } else {
-//         const products = await Product.find({})
-//     }
-//     res.status(201).json(products);
-// })
-
-// //1つの商品を取得
-// app.get("/products/:id", async (req, res) => {
-//     const { id } = req.params;
-//     const foundProduct = await Product.findById(id);
-//     res.status(201).json(foundProduct);
-
-// })
-
-// //商品情報登録フォーム
-// app.get('/products/new', (req, res) => {
-//     res.render('products/new', { categories })
-// })
-
-// //商品情報登録
-// app.post('/products', async (req, res) => {
-//     const productData = {
-//         ...req.body,
-//         productId: uuid()
-//     };
-//     const newProduct = new Product(productData);
-//     await newProduct.save();
-//     res.status(201).json(newProduct);
-// })
-
-// //商品情報編集フォーム
-// app.get('/products/:id/edit', async (req, res) => {
-//     const { id } = req.params;
-//     const product = await Product.findById(id);
-//     res.render('products/edit', { product, categories })
-// })
-
-// //商品情報更新
-// app.put('/products/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
-//     res.status(201).json(product);
-// })
-
-// //商品情報削除
-// app.delete('/products/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const deletedProduct = await Product.findByIdAndDelete(id);
-//     res.status(201).json(deletedProduct);
-// })
-
-
+app.use((err, req, res, next) => {
+    const { status = 500, message = '何らかのサーバーエラーが発生しました' } = err;
+    // res.status(status).send(message);
+    console.error("An error occured:", message);
+    return res.status(status).json({ message });
+})
 
 
 app.listen(3000, () => {

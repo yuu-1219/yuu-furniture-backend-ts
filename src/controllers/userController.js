@@ -1,30 +1,44 @@
 const bcrypt = require('bcrypt');
 const User = require("../models/user");
+const AppError = require("../utils/AppError");
+const wrapAsync = require("../utils/wrapAsync");
 
 
-module.exports.userDetail = async (req, res) => {
+module.exports.userDetail = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const foundUser = await User.findById(id);
-    const { password: _, ...withoutPasswordUser } = foundUser.toObject();
-    res.status(201).json(withoutPasswordUser);
-}
 
-module.exports.login = async (req, res) => {
+    if (!foundUser) {
+        throw new AppError("該当するユーザーデータが存在しません", 404);
+    }
+
+    const { password: _, ...withoutPasswordUser } = foundUser.toObject();
+    res.status(200).json(withoutPasswordUser);
+})
+
+module.exports.login = wrapAsync(async (req, res, next) => {
     const { email, password } = req.body;
     const foundUser = await User.findOne({ email: email });
 
+    if (!foundUser) {
+        throw new AppError("該当するユーザーデータが存在しません", 404);
+    }
+
     const isMatch = await bcrypt.compare(password, foundUser.password);
 
-    if (isMatch) {
-        const { password: _, ...withoutPasswordUser } = foundUser.toObject();
-        res.status(201).json(withoutPasswordUser);
-    } else {
-        return res.status(401).json({ message: 'パスワードが違います' });
-
+    if (!isMatch) {
+        throw new AppError("パスワードが違います", 401);
     }
-}
 
-module.exports.registerUser = async (req, res) => {
+    // if (isMatch) {
+    const { password: _, ...withoutPasswordUser } = foundUser.toObject();
+    res.status(200).json(withoutPasswordUser);
+    // } else {
+    //     return res.status(401).json({ message: 'パスワードが違います' });
+    // }
+})
+
+module.exports.registerUser = wrapAsync(async (req, res, next) => {
     const saltRounds = 10;
     const { userInfo, password } = req.body;
 
@@ -37,23 +51,37 @@ module.exports.registerUser = async (req, res) => {
     const newUser = new User(userData);
     await newUser.save();
 
+    if (!newUser) {
+        throw new AppError("ユーザーデータが正しく登録されませんでした", 500);
+    }
+
     const { password: _, ...withoutPasswordUser } = newUser.toObject();
     res.status(201).json(withoutPasswordUser);
-}
+})
 
-module.exports.updateUserInfo = async (req, res) => {
+module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
-    const targetUser = await User.findById(id);
+    const foundUser = await User.findById(id);
+
+    if (!foundUser) {
+        throw new AppError("該当するユーザーデータが存在しません", 404);
+    }
+
     const updatedUser = {
         ...req.body,
-        password: targetUser.password
+        password: foundUser.password
     }
     const changedUser = await User.findByIdAndUpdate(id, updatedUser, { runValidators: true, new: true });
-    const { password: _, ...withoutPasswordUser } = changedUser.toObject();
-    res.status(201).json(withoutPasswordUser);
-}
 
-module.exports.updateUserPassword = async (req, res) => {
+    if (!changedUser) {
+        throw new AppError("ユーザーデータが正しく変更されませんでした", 500);
+    }
+
+    const { password: _, ...withoutPasswordUser } = changedUser.toObject();
+    res.status(200).json(withoutPasswordUser);
+})
+
+module.exports.updateUserPassword = wrapAsync(async (req, res, next) => {
     const saltRounds = 10;
 
     const { id } = req.params;
@@ -61,15 +89,24 @@ module.exports.updateUserPassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const updatedUser = await User.findByIdAndUpdate(id, {password: hashedPassword}, { runValidators: true, new: true });
-    const { password: _, ...withoutPasswordUser } = updatedUser.toObject();
-    res.status(201).json(withoutPasswordUser);
-}
+    const updatedUser = await User.findByIdAndUpdate(id, { password: hashedPassword }, { runValidators: true, new: true });
 
-module.exports.deleteUser = async (req, res) => {
+    if (!updatedUser) {
+        throw new AppError("該当するユーザーデータが存在しません", 404);
+    }
+
+    const { password: _, ...withoutPasswordUser } = updatedUser.toObject();
+    res.status(200).json(withoutPasswordUser);
+})
+
+module.exports.deleteUser = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
 
+    if (!deletedUser) {
+        throw new AppError("該当するユーザーデータが存在しません", 404);
+    }
+
     const { password: _, ...withoutPasswordUser } = deletedUser.toObject();
-    res.status(201).json(withoutPasswordUser);
-}
+    res.status(200).json(withoutPasswordUser);
+})
