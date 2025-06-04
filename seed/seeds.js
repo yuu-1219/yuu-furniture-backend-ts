@@ -99,23 +99,26 @@ async function seed() {
     await Product.deleteMany({});
 
 
-    const categoryDir = path.join(baseLocalImgPath, baseProduct.category);
-    for (let i = 1; i <= 20; i++) {
-        const filename = `${baseProduct.category}${i}.jpg`;
-        const localPath = path.join(categoryDir, filename);
-        const s3Key = `${baseProduct.category}/${filename}`;
-        const s3Url = await uploadImageToS3(localPath, s3Key);
+    // const categoryDir = path.join(baseLocalImgPath, baseProduct.category);
+    for (const category of categories) {
+        const categoryDir = path.join(baseLocalImgPath, category.categoryId);
+        for (let i = 1; i <= 20; i++) {
+            const filename = `${category.categoryId}${i}.jpg`;
+            const localPath = path.join(categoryDir, filename);
+            const s3Key = `${category.categoryId}/${filename}`;
+            const s3Url = await uploadImageToS3(localPath, s3Key);
 
-        const product = {
-            ...baseProduct,
-            name: `${baseProduct.name}${i}`,
-            price: 500 + (i - 1) * 1000,
-            category: baseProduct.category,
-            img: s3Url,
-            color: colors[Math.floor(Math.random() * 5)].colorLabel,
-            rating: (Math.random() * 5),
+            const product = {
+                ...baseProduct,
+                name: `${category.categoryLabel}${i}`,
+                price: 500 + (i - 1) * 1000,
+                category: category.categoryId,
+                img: s3Url,
+                color: colors[Math.floor(Math.random() * 5)].colorLabel,
+                rating: (Math.random() * 5),
+            }
+            products.push(product);
         }
-        products.push(product);
     }
 
     await Product.insertMany(products);

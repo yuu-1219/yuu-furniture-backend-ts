@@ -39,18 +39,18 @@ const categories = [
     categoryId: "decoration", categoryLabel: "インテリア雑貨", 
     description: ""
   },
-  {
-    categoryId: "kitchenware・tableware", categoryLabel: "調理器具・食器", 
-    description: ""
-  },
-  {
-    categoryId: "bathroom_products", categoryLabel: "洗面所収納・バスタオル", 
-    description: "賢くて楽しいアクセサリーを上手に使えば、バスルームを簡単にパーソナライズし、きちんと整理整頓して時間も節約できます。シャワーバスケットや吸盤付きフック、ソープディスペンサー、おしゃれなバスケット、きれいで実用的な小物入れなど、各種アクセサリーをさまざまなデザインや色からお選びいただけます。"
-  },
-  {
-    categoryId: "kitchen・appliances", categoryLabel: "キッチン収納",
-    description: "探しているのは、自由にカスタマイズできるフルカスタマイズのシステムキッチン？ それとも、シンプルだけれど必要な機能が全部そろった、1日で設置できるキッチン？ あなたのニーズや好きなスタイル、予算に合った理想のキッチンがきっと見つかります。"
-  }
+  // {
+  //   categoryId: "kitchenware・tableware", categoryLabel: "調理器具・食器", 
+  //   description: ""
+  // },
+  // {
+  //   categoryId: "bathroom_products", categoryLabel: "洗面所収納・バスタオル", 
+  //   description: "賢くて楽しいアクセサリーを上手に使えば、バスルームを簡単にパーソナライズし、きちんと整理整頓して時間も節約できます。シャワーバスケットや吸盤付きフック、ソープディスペンサー、おしゃれなバスケット、きれいで実用的な小物入れなど、各種アクセサリーをさまざまなデザインや色からお選びいただけます。"
+  // },
+  // {
+  //   categoryId: "kitchen・appliances", categoryLabel: "キッチン収納",
+  //   description: "探しているのは、自由にカスタマイズできるフルカスタマイズのシステムキッチン？ それとも、シンプルだけれど必要な機能が全部そろった、1日で設置できるキッチン？ あなたのニーズや好きなスタイル、予算に合った理想のキッチンがきっと見つかります。"
+  // }
 ];
 
 module.exports = { categories };
