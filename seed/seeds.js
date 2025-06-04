@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const { categories } = require("../src/constants/categories");
+const { colors } = require("../src/constants/colors");
 
 const { v4: uuid } = require("uuid");
 const mongoose = require("mongoose");
@@ -111,7 +112,9 @@ async function seed() {
             price: 500 + (i - 1) * 1000,
             category: baseProduct.category,
             img: s3Url,
-        };
+            color: colors[Math.floor(Math.random() * 5)].colorLabel,
+            rating: (Math.random() * 5),
+        }
         products.push(product);
     }
 

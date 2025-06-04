@@ -32,7 +32,7 @@ app.set('view engine', 'ejs');
 
 
 //全商品取得
-router.get('/', productController.allProducts)
+router.post('/', productController.allProducts)
 
 //1つの商品を取得
 router.get("/:id", productController.productDetail)
@@ -42,7 +42,7 @@ router.get("/:id", productController.productDetail)
 router.get('/new', productController.registerProductForm)
 
 //商品情報登録
-router.post('/', productController.registerProduct)
+router.post('/register', productController.registerProduct)
 
 //商品情報編集フォーム
 router.get('/:id/edit', productController.editProductForm)
