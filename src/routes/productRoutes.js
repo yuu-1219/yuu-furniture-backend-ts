@@ -34,6 +34,9 @@ app.set('view engine', 'ejs');
 //全商品取得
 router.post('/', productController.allProducts)
 
+//ランキングtop5取得
+router.post('/ranking', productController.topProducts)
+
 //1つの商品を取得
 router.get("/:id", productController.productDetail)
 

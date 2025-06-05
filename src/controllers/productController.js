@@ -33,6 +33,13 @@ module.exports.allProducts = wrapAsync(async (req, res, next) => {
     res.status(200).json(filteredProducts);
 })
 
+module.exports.topProducts = wrapAsync(async (req, res, next) => {
+    const topProducts = await Product.find({}).sort({rating: -1}).limit(5);
+
+    res.status(200).json(topProducts);
+})
+
+
 module.exports.productDetail = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
