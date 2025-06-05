@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require("../models/user");
 const AppError = require("../utils/AppError");
+const sendEmail = require("../utils/mailer");
 const wrapAsync = require("../utils/wrapAsync");
 
 
@@ -61,20 +62,25 @@ module.exports.registerUser = wrapAsync(async (req, res, next) => {
 
 module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
     const { id } = req.params;
+    const { updatedUser, isPurchase, orderId } = req.body;
     const foundUser = await User.findById(id);
 
     if (!foundUser) {
         throw new AppError("該当するユーザーデータが存在しません", 404);
     }
 
-    const updatedUser = {
-        ...req.body,
+    const changedWithPasswordUser = {
+        ...updatedUser,
         password: foundUser.password
     }
-    const changedUser = await User.findByIdAndUpdate(id, updatedUser, { runValidators: true, new: true });
+    const changedUser = await User.findByIdAndUpdate(id, changedWithPasswordUser, { runValidators: true, new: true });
 
     if (!changedUser) {
         throw new AppError("ユーザーデータが正しく変更されませんでした", 500);
+    }
+
+    if(isPurchase) {
+        await sendEmail(changedUser.email, orderId);
     }
 
     const { password: _, ...withoutPasswordUser } = changedUser.toObject();
