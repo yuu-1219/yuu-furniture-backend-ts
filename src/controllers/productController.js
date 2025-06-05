@@ -6,7 +6,7 @@ const wrapAsync = require("../utils/wrapAsync");
 module.exports.allProducts = wrapAsync(async (req, res, next) => {
     let products = [];
     // const { category } = req.query;
-    const { category, colors, priceRanges } = req.body;
+    const { searchWord, category, colors, priceRanges } = req.body;
     if (category) {
         products = await Product.find({ category })
     } else {
@@ -14,6 +14,12 @@ module.exports.allProducts = wrapAsync(async (req, res, next) => {
     }
 
     let filteredProducts = products;
+
+    if (searchWord) {
+        filteredProducts = filteredProducts.filter(c => c.name.includes(searchWord));
+    } 
+
+    // let filteredProducts = products;
 
     if (colors.length > 0) {
         filteredProducts = filteredProducts.filter(c => colors.includes(c.color));
