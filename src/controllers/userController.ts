@@ -1,11 +1,19 @@
-const bcrypt = require('bcrypt');
-const User = require("../models/user");
-const AppError = require("../utils/AppError");
-const sendEmail = require("../utils/mailer");
-const wrapAsync = require("../utils/wrapAsync");
+import { type Request, type Response, type NextFunction } from "express";
+
+import bcrypt from 'bcrypt';
+import User from "../models/user";
+import AppError from "../utils/AppError";
+import sendEmail from "../utils/mailer";
+import wrapAsync from "../utils/wrapAsync";
+
+import { type UserType } from "../models/user";
 
 
-module.exports.userDetail = wrapAsync(async (req, res, next) => {
+export const userDetail = wrapAsync(async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { id } = req.params;
     const foundUser = await User.findById(id);
 
@@ -17,7 +25,11 @@ module.exports.userDetail = wrapAsync(async (req, res, next) => {
     res.status(200).json(withoutPasswordUser);
 })
 
-module.exports.login = wrapAsync(async (req, res, next) => {
+export const login = wrapAsync(async (
+    req: Request<{}, {}, { email: string; password: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { email, password } = req.body;
     const foundUser = await User.findOne({ email: email });
 
@@ -31,21 +43,21 @@ module.exports.login = wrapAsync(async (req, res, next) => {
         throw new AppError("パスワードが違います", 401);
     }
 
-    // if (isMatch) {
     const { password: _, ...withoutPasswordUser } = foundUser.toObject();
     res.status(200).json(withoutPasswordUser);
-    // } else {
-    //     return res.status(401).json({ message: 'パスワードが違います' });
-    // }
 })
 
-module.exports.registerUser = wrapAsync(async (req, res, next) => {
-    const saltRounds = 10;
+export const registerUser = wrapAsync(async (
+    req: Request<{}, {}, { userInfo: Omit<UserType, "_id" | "password">; password: string }>,
+    res: Response,
+    next: NextFunction
+) => {
+    const saltRounds: number = 10;
     const { userInfo, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const userData = {
+    const userData: UserType = {
         ...userInfo,
         password: hashedPassword
     };
@@ -60,7 +72,11 @@ module.exports.registerUser = wrapAsync(async (req, res, next) => {
     res.status(201).json(withoutPasswordUser);
 })
 
-module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
+export const updateUserInfo = wrapAsync(async (
+    req: Request<{ id: string }, {}, { updatedUser: Omit<UserType, "password">; isPurchase: boolean; orderId: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { id } = req.params;
     const { updatedUser, isPurchase, orderId } = req.body;
     const foundUser = await User.findById(id);
@@ -69,7 +85,7 @@ module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
         throw new AppError("該当するユーザーデータが存在しません", 404);
     }
 
-    const changedWithPasswordUser = {
+    const changedWithPasswordUser: UserType = {
         ...updatedUser,
         password: foundUser.password
     }
@@ -79,7 +95,7 @@ module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
         throw new AppError("ユーザーデータが正しく変更されませんでした", 500);
     }
 
-    if(isPurchase) {
+    if (isPurchase) {
         await sendEmail(changedUser.email, orderId);
     }
 
@@ -87,8 +103,12 @@ module.exports.updateUserInfo = wrapAsync(async (req, res, next) => {
     res.status(200).json(withoutPasswordUser);
 })
 
-module.exports.updateUserPassword = wrapAsync(async (req, res, next) => {
-    const saltRounds = 10;
+export const updateUserPassword = wrapAsync(async (
+    req: Request<{ id: string }, {}, { password: string }>,
+    res: Response,
+    next: NextFunction
+) => {
+    const saltRounds: number = 10;
 
     const { id } = req.params;
     const { password } = req.body;
@@ -105,7 +125,11 @@ module.exports.updateUserPassword = wrapAsync(async (req, res, next) => {
     res.status(200).json(withoutPasswordUser);
 })
 
-module.exports.deleteUser = wrapAsync(async (req, res, next) => {
+export const deleteUser = wrapAsync(async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
 
@@ -116,3 +140,13 @@ module.exports.deleteUser = wrapAsync(async (req, res, next) => {
     const { password: _, ...withoutPasswordUser } = deletedUser.toObject();
     res.status(200).json(withoutPasswordUser);
 })
+
+
+export const userController = {
+    userDetail,
+    login,
+    registerUser,
+    updateUserInfo,
+    updateUserPassword,
+    deleteUser,
+  };

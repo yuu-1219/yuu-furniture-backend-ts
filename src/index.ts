@@ -1,25 +1,26 @@
 require('dotenv').config();
+import { Request, Response, NextFunction } from "express";
 
-const { v4: uuid } = require("uuid");
+import express from "express";
+import path from 'path';
+import methodOverride from "method-override";
+import mongoose from "mongoose";
+import cors from "cors";
 
-const express = require("express");
+import productRoutes from "./routes/productRoutes";
+import userRoutes from "./routes/userRoutes";
+import cartRoutes from "./routes/cartRoutes";
+
+import AppError from "./utils/AppError";
+
 const app = express()
-const path = require('path');
-const methodOverride = require('method-override')
-const mongoose = require("mongoose");
-const cors = require("cors");
 
-
-const productRoutes = require("./src/routes/productRoutes");
-const userRoutes = require("./src/routes/userRoutes");
-const cartRoutes = require("./src/routes/cartRoutes");
-
-const localdb_url = 'mongodb://localhost:27017/yuu-furniture'
-const dburl = process.env.DB_URL;
+// const localdb_url: string = 'mongodb://localhost:27017/yuu-furniture'
+const dburl: string = process.env.DB_URL as string;
 
 console.log("DB URL:", dburl);
 
-mongoose.connect(dburl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dburl)
 .then(() => {
     console.log("MONGO CONNECTION OPEN!!!")
 })
@@ -41,30 +42,23 @@ app.set('view engine', 'ejs');
 
 
 
-// const categories = ["storage_furniture", "small_storage", "sofas・armchairs", "textiles", 
-//     "beds・mattresses", "tables・chairs", "desk・deskchairs", "lighting", "rugs・mats", 
-//     "decoration", "kitchenware・tableware", "bathroom_products", "kitchen・appliances"];
-
-
-
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to the home page!!!!')
 })
 
-const handleValidationErr = err => {
+const handleValidationErr = (err: mongoose.Error.ValidationError) => {
     console.dir(err);
     return new AppError(`Validation Failed...${err.message}`, 400)
 }
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.log(err.name);
     if (err.name === 'ValidationError') err = handleValidationErr(err)
     next(err);
 })
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     const { status = 500, message = '何らかのサーバーエラーが発生しました' } = err;
-    // res.status(status).send(message);
     console.error("An error occured:", message);
     return res.status(status).json({ message });
 })
@@ -73,3 +67,4 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log("Listening on port 3000")
 })
+

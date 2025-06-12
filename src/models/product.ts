@@ -1,10 +1,19 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { type Schema } from "mongoose";
 
-const productSchema = new mongoose.Schema({
-    // productId: {
-    //     type: String,
-    //     required: true
-    // },
+
+export interface ProductType {
+    name: string;
+    price: number;
+    img: string;
+    description: string;
+    color: string;
+    stock: number;
+    category: string;
+    rating: number;
+}
+
+export const productSchema: Schema<ProductType> = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -35,8 +44,8 @@ const productSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
-        enum: ["storage_furniture", "small_storage", "sofas・armchairs", "textiles", 
-            "beds・mattresses", "tables・chairs", "desk・deskchairs", "lighting", "rugs・mats", 
+        enum: ["storage_furniture", "small_storage", "sofas・armchairs", "textiles",
+            "beds・mattresses", "tables・chairs", "desk・deskchairs", "lighting", "rugs・mats",
             "decoration", "kitchenware・tableware", "bathroom_products", "kitchen・appliances"]
     },
     rating: {
@@ -44,12 +53,12 @@ const productSchema = new mongoose.Schema({
         required: false,
         default: 0
     }
-    
+
 })
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model<ProductType>("Product", productSchema);
 
-module.exports = Product;
+export default Product;
 
 
 

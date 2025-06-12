@@ -1,3 +1,9 @@
+export interface ColorType {
+  colorId: string;
+  colorLabel: string;
+  hex: string; 
+}
+
 const colors = [
     { colorId: "white", colorLabel: "ホワイト", hex: "#ffffff" },
     { colorId: "black", colorLabel: "ブラック", hex: "#000000" },

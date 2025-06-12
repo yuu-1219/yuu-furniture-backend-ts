@@ -1,9 +1,17 @@
-const Cart = require("../models/cart");
-const AppError = require("../utils/AppError");
-const wrapAsync = require("../utils/wrapAsync");
+import { type Request, type Response, type NextFunction } from "express";
+
+import Cart from "../models/cart";
+import AppError from "../utils/AppError";
+import wrapAsync from "../utils/wrapAsync";
+
+import { type CartType } from "../models/cart";
 
 
-module.exports.cartDetail = wrapAsync(async (req, res, next) => {
+export const cartDetail = wrapAsync(async (
+    req: Request<{ userId: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { userId } = req.params;
     const foundCart = await Cart.findOne({ userId });
 
@@ -14,7 +22,11 @@ module.exports.cartDetail = wrapAsync(async (req, res, next) => {
     res.status(200).json(foundCart);
 })
 
-module.exports.registerCart = wrapAsync(async (req, res, next) => {
+export const registerCart = wrapAsync(async (
+    req: Request<{}, {}, Omit<CartType, "_id">>,
+    res: Response,
+    next: NextFunction
+) => {
     const cartData = {
         ...req.body,
         // cartId: uuid()
@@ -29,7 +41,11 @@ module.exports.registerCart = wrapAsync(async (req, res, next) => {
     res.status(201).json(newCart);
 })
 
-module.exports.updateCart = wrapAsync(async (req, res, next) => {
+export const updateCart = wrapAsync(async (
+    req: Request<{ userId: string }, {}, Omit<CartType, "_id">>,
+    res: Response,
+    next: NextFunction
+) => {
     const { userId } = req.params;
     const updatedCart = await Cart.findOneAndUpdate({ userId }, req.body, { runValidators: true, new: true });
 
@@ -40,7 +56,11 @@ module.exports.updateCart = wrapAsync(async (req, res, next) => {
     res.status(200).json(updatedCart);
 })
 
-module.exports.deleteCart = wrapAsync(async (req, res, next) => {
+export const deleteCart = wrapAsync(async (
+    req: Request<{ userId: string }>,
+    res: Response,
+    next: NextFunction
+) => {
     const { userId } = req.params;
     const deletedCart = await Cart.findOneAndDelete({ userId });
 
@@ -49,3 +69,10 @@ module.exports.deleteCart = wrapAsync(async (req, res, next) => {
     }
     res.status(200).json(deletedCart);
 })
+
+export const cartController = {
+    cartDetail,
+    registerCart,
+    updateCart,
+    deleteCart,
+  };

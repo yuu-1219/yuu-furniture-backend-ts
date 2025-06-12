@@ -1,19 +1,20 @@
 require('dotenv').config();
 
-const express = require("express");
+import express from "express";
+import path from 'path';
+import methodOverride from "method-override";
+import mongoose from "mongoose";
+import cors from "cors";
+
+import User from "../models/user";
+import { userController } from "../controllers/userController";
+
 const app = express()
 const router = express.Router();
-const path = require('path');
-const methodOverride = require('method-override')
-const mongoose = require("mongoose");
-const cors = require("cors");
 
-const User = require("../models/user")
-const userController = require("../controllers/userController");
+const dburl: string = process.env.DB_URL as string;
 
-const dburl = process.env.DB_URL;
-
-mongoose.connect(dburl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dburl)
 .then(() => {
     console.log("MONGO CONNECTION OPEN!!!")
 })
@@ -51,4 +52,4 @@ router.put('/:id/password', userController.updateUserPassword)
 router.delete('/:id', userController.deleteUser)
 
 
-module.exports = router;
+export default router;

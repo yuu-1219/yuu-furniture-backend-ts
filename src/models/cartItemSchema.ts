@@ -1,6 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose = require("mongoose");
+import { type Schema } from "mongoose";
 
-const cartItemSchema = new mongoose.Schema({
+
+export interface CartItemType {
+    productId: mongoose.Schema.Types.ObjectId;
+    quantity: number;
+    color: string;
+  }
+
+export const cartItemSchema: Schema<CartItemType> = new mongoose.Schema({
     // productId: {
     //     type: String,
     //     required: true
@@ -22,4 +30,4 @@ const cartItemSchema = new mongoose.Schema({
 
 }, { _id: false });
 
-module.exports = cartItemSchema;
+// module.exports = cartItemSchema;

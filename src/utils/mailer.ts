@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", 
@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendEmail(to, orderId) {
+async function sendEmail(to: string, orderId: string) {
   const siteUrl = process.env.FRONT_URL; 
   const mailOptions = {
     from: process.env.GMAIL_USER,
@@ -24,5 +24,4 @@ async function sendEmail(to, orderId) {
 
   await transporter.sendMail(mailOptions);
 }
-
-module.exports = sendEmail;
+export default sendEmail;

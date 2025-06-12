@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+nodemon.json
 
 /src/assets/imgs/

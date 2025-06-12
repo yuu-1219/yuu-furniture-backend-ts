@@ -1,19 +1,21 @@
 require('dotenv').config();
 
-const express = require("express");
+import express from "express";
+
+import path from 'path';
+import methodOverride from "method-override"
+import mongoose from "mongoose";
+import cors from "cors";
+
+import Product from "../models/product";
+import { productController } from "../controllers/productController";
+
 const app = express()
 const router = express.Router();
-const path = require('path');
-const methodOverride = require('method-override')
-const mongoose = require("mongoose");
-const cors = require("cors");
 
-const Product = require("../models/product");
-const productController = require("../controllers/productController");
+const dburl: string = process.env.DB_URL as string;
 
-const dburl = process.env.DB_URL;
-
-mongoose.connect(dburl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dburl)
 .then(() => {
     console.log("MONGO CONNECTION OPEN!!!")
 })
@@ -56,4 +58,4 @@ router.put('/:id', productController.updateProduct)
 //商品情報削除
 router.delete('/:id', productController.deleteProduct)
 
-module.exports = router;
+export default router;
