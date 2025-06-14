@@ -17,6 +17,7 @@ const app = express()
 
 // const localdb_url: string = 'mongodb://localhost:27017/yuu-furniture'
 const dburl: string = process.env.DB_URL as string;
+const port: string = process.env.PORT as string;
 
 console.log("DB URL:", dburl);
 
@@ -64,7 +65,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 })
 
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("Listening on port 3000")
 })
 
