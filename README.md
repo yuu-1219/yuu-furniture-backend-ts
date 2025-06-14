@@ -23,7 +23,7 @@ TypeScript(React) + Node.js + MongoDBで構成し、商品閲覧からカート�
 ## 使用技術（Tech Stack）
 - フロント：HTML / CSS / TypeScript / React(Material UI含む)
 - バックエンド：Node.js / Express
-- データベース：MongoDB（Mongoose）
+- データベース：MongoDB（Mongoose, , Atlas）
 - デプロイ：AWS(EC2, Route53, ALB, S3)
 - その他：Git / GitHub
   
@@ -44,8 +44,10 @@ TypeScript(React) + Node.js + MongoDBで構成し、商品閲覧からカート�
 | `/register`               | 会員登録ページ         | 会員情報登録                              |
 | `/user/:id`               | 会員ページ             | 注文履歴・会員情報変更・お気に入りリスト      |
 | `/user/:id/order-history` | 購入履歴ページ         | 注文履歴表示                     　　　    |
-| `/user/:id/info`          | 会員情報変更ページ      | 会員情報の確認・変更                       |
 | `/user/:id/favorite`      | お気に入り一覧ページ    | お気に入りリストの表示                      |
+| `/user/:id/info`          | 会員情報変更ページ      | 会員情報の確認・変更                       |
+| `/user/:id/password`      | パスワード変更ページ    | パスワードの変更 　　                      |
+
 
 
 ## 機能一覧（Feature List）
@@ -58,6 +60,29 @@ TypeScript(React) + Node.js + MongoDBで構成し、商品閲覧からカート�
 - 注文履歴の表示
 - お気に入り商品リストの表示
 - 管理者による商品登録フォーム
+  
+### ※商品一覧表示における検索・絞り込み・並べ替え機能について
+
+`/products` ページでは、以下のような検索・絞り込み・並べ替えに対応しております。。
+
+#### 【クエリパラメータによる検索】
+- `category`：カテゴリ指定によるフィルター  
+  例）`/products?category=storage_furniture`
+- `search`：検索キーワードによるフィルター  
+  例）`/products?search=収納`
+- 複合指定：  
+  例）`/products?category=storage_furniture&search=収納`
+
+#### 【ページ上での絞り込み機能】
+- `カラー`：チェックボックスで複数選択可能
+- `価格`：5,000円〜9,999円、10,000円〜14,999円 などの価格帯を複数選択可能
+- 商品データ取得時に上記データをボディに含め、バックエンドより絞り込みされたデータを取得
+
+#### 【並べ替え機能】
+- 表示順を以下のいずれかに変更可能
+  - 価格の安い順(デフォルト)
+  - 価格の高い順
+  - 評価の高い順
 
 
 ## API設計（API Design）
@@ -92,14 +117,14 @@ Figmaで作成したECサイトのワイヤーフレームにリンクしてお�
 // Product
 {
   "_id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "オフィスチェア",
-  "price": 2500,
-  "image": "/img/chair.png",
-  "description": "背もたれ部分がメッシュ素材でできた快適なオフィスチェアです",
-  "color": "ホワイト",
+  "name": "収納家具6",
+  "price": 5500,
+  "image": "https://yuu-furniture-imgs.s3.ap-northeast-1.amazonaws.com/products/storage_furniture/storage_furniture6.jpg", 
+  "description": "アパートの一室やゲストルームを素早く簡単に整えられます。同じシリーズのベッドサイドテーブル、ベッド、ワードローブを組み合わせると統一感が出ます",
+  "color": "ブラウン",
   "stock": 20,
-  "category": "chair",
-  "rating": 4.5
+  "category": "storage_furniture",
+  "rating": 5.0
 }
 
 // Cart
@@ -119,7 +144,7 @@ Figmaで作成したECサイトのワイヤーフレームにリンクしてお�
     }
   ],
   "totalQty": 3,
-  "totalPrice": 35400,
+  "totalPrice": 35250,
   "updatedAt": "2025-05-18T14:32:00Z"
 }
 
@@ -128,7 +153,7 @@ Figmaで作成したECサイトのワイヤーフレームにリンクしてお�
   "_id": "c8b21c0e-5a74-4e67-88f5-2e13ef8300e9",
   "name": "yuu",
   "email": "yuu@gmail.com",
-  "password": "（ハッシュ化されたもの）",
+  "password": "（ローカルで生成されたパスワードをハッシュ化し、DBへ格納）",
   "orders": [
     {
       "orderId": "20250508-0234",
@@ -145,7 +170,7 @@ Figmaで作成したECサイトのワイヤーフレームにリンクしてお�
         }
       ],
       "totalQty": 3,
-      "totalPrice": 8800,
+      "totalPrice": 8250,
       "purchasedAt": "2024-05-08T15:23:00Z"
     },
   ],
