@@ -60,4 +60,4 @@ const categories = [
   // }
 ];
 
-module.exports = { categories };
+export default categories;

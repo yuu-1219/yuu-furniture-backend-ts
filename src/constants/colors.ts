@@ -22,4 +22,4 @@ const colors = [
     { colorId: "othecolorI", colorLabel: "その他", hex: "#a05bd7" },
   ];
 
-  module.exports = { colors };
+  export default colors;

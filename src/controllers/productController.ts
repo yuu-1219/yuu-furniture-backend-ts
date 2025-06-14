@@ -4,6 +4,8 @@ import Product from "../models/product";
 import AppError from "../utils/AppError";
 import wrapAsync from "../utils/wrapAsync";
 
+import categories from "../constants/categories";
+
 import { type ProductType } from "../models/product";
 import { type PriceRangeType } from "../types/priceRange";
 
