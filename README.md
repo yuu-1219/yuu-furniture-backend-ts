@@ -23,8 +23,8 @@ TypeScript(React) + Node.js + MongoDBで構成し、商品閲覧からカート�
 ## 使用技術（Tech Stack）
 - フロント：HTML / CSS / TypeScript / React(Material UI含む)
 - バックエンド：Node.js / Express
-- データベース：MongoDB（Mongoose, , Atlas）
-- デプロイ：AWS(EC2, Route53, ALB, S3)
+- データベース：MongoDB（Mongoose, Atlas）
+- デプロイ：AWS(EC2, ALB, WAF, Route53, S3)
 - その他：Git / GitHub
   
 
@@ -177,7 +177,7 @@ Figmaで作成したECサイトのワイヤーフレームにリンクしてお�
   "favorites": [
     { 
       "productId": "550e8400-e29b-41d4-a716-446655440000",
-    　"color": "ブラック"
+      "color": "ブラック"
     },
     {
       "productId": "550e8400-e29b-41d4-a716-446655445550", 
