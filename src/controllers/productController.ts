@@ -1,13 +1,19 @@
 import { type Request, type Response, type NextFunction } from "express";
+import fs from "fs";
+import path from "path";
+import AWS from "aws-sdk";
 
 import Product from "../models/product";
 import AppError from "../utils/AppError";
 import wrapAsync from "../utils/wrapAsync";
+import uploadImage from "../utils/uploadImage";
+
 
 import categories from "../constants/categories";
 
 import { type ProductType } from "../models/product";
 import { type PriceRangeType } from "../types/priceRange";
+
 
 interface allProductRequestBodyType {
     searchWord: string | null;
@@ -82,14 +88,34 @@ export const registerProductForm = (
     res.render('products/new', { categories })
 }
 
-export const registerProduct = wrapAsync(async (
-    req: Request<{}, {}, Omit<ProductType, "_id">>,
+
+interface MulterReq<T> extends Request<{}, {}, T> {
+    file: Express.Multer.File;
+}
+
+export const registerProduct = wrapAsync<MulterReq<Omit<ProductType, "_id">>>(async (
+    // req: Request<{}, {}, Omit<ProductType, "_id">>,
+    req: MulterReq<Omit<ProductType, "_id">>,
     res: Response,
     next: NextFunction
 ) => {
+    if (!req.file) {
+        throw new AppError("画像データが取得できませんでした", 400);
+    }
+
+    const filename: string = req.file.originalname;
+    const localPath: string = req.file.path;
+    const s3Key: string = `${req.body.category}/${filename}`;
+    const s3Url: string = await uploadImage(localPath, s3Key);
     const productData: ProductType = {
-        ...req.body,
-        // productId: uuid()
+        name: req.body.name,
+        price: Number(req.body.price), 
+        img: s3Url,
+        description: req.body.description,
+        color: req.body.color,
+        stock: Number(req.body.stock),  
+        category: req.body.category,
+        rating: Number(req.body.rating) 
     };
     const newProduct = new Product(productData);
     await newProduct.save();
@@ -98,8 +124,32 @@ export const registerProduct = wrapAsync(async (
         throw new AppError("商品データが正しく登録されませんでした", 500);
     }
 
+    fs.unlinkSync(localPath);
+
     res.status(201).json(newProduct);
+
+    // res.send({ body: req.body, file: req.file });
 })
+
+
+// export const registerProduct = wrapAsync(async (
+//     req: Request<{}, {}, Omit<ProductType, "_id">>,
+//     res: Response,
+//     next: NextFunction
+// ) => {
+//     const productData: ProductType = {
+//         ...req.body,
+//         // productId: uuid()
+//     };
+//     const newProduct = new Product(productData);
+//     await newProduct.save();
+
+//     if (!newProduct) {
+//         throw new AppError("商品データが正しく登録されませんでした", 500);
+//     }
+
+//     res.status(201).json(newProduct);
+// })
 
 export const editProductForm = wrapAsync(async (
     req: Request<{ id: string }>,

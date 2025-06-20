@@ -9,16 +9,17 @@ import path from "path";
 import AWS from "aws-sdk";
 
 import Product, { type ProductType } from "../src/models/product";
+import uploadImage from "../src/utils/uploadImage";
 
 
 const dburl: string = process.env.DB_URL as string;
 const baseLocalImgPath = path.join(__dirname, "../src/assets/imgs");
-const baseImgUrl: string  = "https://yuu-furniture-imgs.s3.ap-northeast-1.amazonaws.com/products" as string
+// const baseImgUrl: string  = "https://yuu-furniture-imgs.s3.ap-northeast-1.amazonaws.com/products" as string
 
 
-const s3 = new AWS.S3({
-    region: process.env.AWS_REGION,
-});
+// const s3 = new AWS.S3({
+//     region: process.env.AWS_REGION,
+// });
 
 const baseProduct: ProductType = {
     name: "収納家具",
@@ -33,17 +34,17 @@ const baseProduct: ProductType = {
 
 const products: ProductType[] = [];
 
-async function uploadImageToS3(localFilePath: string, s3Key: string) {
-    const fileContent = fs.readFileSync(localFilePath);
-    const params = {
-        Bucket: "yuu-furniture-imgs",
-        Key: `products/${s3Key}`,
-        Body: fileContent,
-        ContentType: "image/jpeg",
-    };
-    await s3.upload(params).promise();
-    return `${baseImgUrl}/${s3Key}`;
-}
+// async function uploadImageToS3(localFilePath: string, s3Key: string) {
+//     const fileContent = fs.readFileSync(localFilePath);
+//     const params = {
+//         Bucket: "yuu-furniture-imgs",
+//         Key: `products/${s3Key}`,
+//         Body: fileContent,
+//         ContentType: "image/jpeg",
+//     };
+//     await s3.upload(params).promise();
+//     return `${baseImgUrl}/${s3Key}`;
+// }
 
 
 mongoose.connect(dburl)
@@ -67,7 +68,7 @@ async function seed() {
             const filename: string = `${category.categoryId}${i}.jpg`;
             const localPath: string = path.join(categoryDir, filename);
             const s3Key: string = `${category.categoryId}/${filename}`;
-            const s3Url: string = await uploadImageToS3(localPath, s3Key);
+            const s3Url: string = await uploadImage(localPath, s3Key);
 
             const product: ProductType = {
                 ...baseProduct,

@@ -6,6 +6,7 @@ import path from 'path';
 import methodOverride from "method-override";
 import mongoose from "mongoose";
 import cors from "cors";
+// import multer from "multer";
 
 import productRoutes from "./routes/productRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -14,6 +15,7 @@ import cartRoutes from "./routes/cartRoutes";
 import AppError from "./utils/AppError";
 
 const app = express()
+// const upload = multer({dest: "upload/" });
 
 // const localdb_url: string = 'mongodb://localhost:27017/yuu-furniture'
 const dburl: string = process.env.DB_URL as string;

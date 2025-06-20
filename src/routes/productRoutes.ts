@@ -6,12 +6,14 @@ import path from 'path';
 import methodOverride from "method-override"
 import mongoose from "mongoose";
 import cors from "cors";
+import multer from "multer";
 
 import Product from "../models/product";
 import { productController } from "../controllers/productController";
 
 const app = express()
 const router = express.Router();
+const upload = multer({ dest: 'src/assets/' });
 
 const dburl: string = process.env.DB_URL as string;
 
@@ -39,15 +41,14 @@ router.post('/', productController.allProducts)
 //ランキングtop5取得
 router.post('/ranking', productController.topProducts)
 
-//1つの商品を取得
-router.get("/:id", productController.productDetail)
-
-
 //商品情報登録フォーム
 router.get('/new', productController.registerProductForm)
 
+//1つの商品を取得
+router.get("/:id", productController.productDetail)
+
 //商品情報登録
-router.post('/register', productController.registerProduct)
+router.post('/register', upload.single('img'), productController.registerProduct)
 
 //商品情報編集フォーム
 router.get('/:id/edit', productController.editProductForm)

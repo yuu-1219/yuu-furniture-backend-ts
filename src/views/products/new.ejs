@@ -9,35 +9,47 @@
 
 <body>
     <h1>Add A Product</h1>
-    <form action="/products/register" method="POST">
+    <form action="/api/products/register" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
         <label for="name">Product Name</label>
         <input type="text" name="name" id="name" placeholder="product name">
+        <br>
 
-        <label for="price">Price (Unit)</label>
+        <label for="price">Price</label>
         <input type="number" id="price" name="price" placeholder="price">
+        <br>
 
-        <label for="img">Product Img URL</label>
-        <input type="text" name="img" id="img" placeholder="product img url">
+        <label for="img">Product Img</label>
+        <input type="file" name="img" id="img">
+        <br>
+
+        <!-- <label for="img">Product Img filename</label>
+        <input type="text" name="filename" id="filename" placeholder="product img filename">
+        <br> -->
 
         <label for="description">Product Description</label>
         <input type="text" name="description" id="description" placeholder="product description">
+        <br>
 
         <label for="color">Product Color</label>
         <input type="text" name="color" id="color" placeholder="product color">
+        <br>
 
-        <label for="stock">Stock (Unit)</label>
+        <label for="stock">Stock</label>
         <input type="number" id="stock" name="stock" placeholder="stock">
+        <br>
         
 
         <label for="category">Select Category</label>
         <select name="category" id="category">
             <% for(let category of categories){ %>
-            <option value="<%=category%>"><%=category%></option>
+            <option value="<%=category.categoryId%>"><%=category.categoryId%></option>
             <% } %>
         </select>
+        <br>
 
-        <label for="rating">Rating (Unit)</label>
+        <label for="rating">Rating</label>
         <input type="number" id="rating" name="rating" placeholder="rating">
+        <br>
 
         <button>Submit</button>
     </form>
