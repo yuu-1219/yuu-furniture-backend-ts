@@ -49,12 +49,7 @@
 ```typescript
 const [productName, setProductName] = useState<string>("");
 const [productImg, setProductImg] = useState<File | null>(null);
-const [price, setPrice] = useState<number | null>(null);
-const [description, setDescription] = useState<string>("");
-const [color, setColor] = useState<string>("");
-const [stock, setStock] = useState<number | null>(null);
-const [category, setCategory] = useState<string>("");
-const [rating, setRating] = useState<number | null>(null);
+...
 ```
 
 ### 5.4. 操作フロー
